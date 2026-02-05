@@ -1,1 +1,57 @@
-/* Add styles here */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  margin: 0;
+}
+
+.lotto-container {
+  text-align: center;
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.lotto-numbers {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+lotto-ball {
+  display: inline-block;
+}
+
+.generate-btn {
+  background-color: #4a90e2;
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.generate-btn:hover {
+  background-color: #357abd;
+  box-shadow: 0 0 15px rgba(74, 144, 226, 0.5);
+}
+
+.generate-btn:active {
+  background-color: #2a6293;
+  box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+}
