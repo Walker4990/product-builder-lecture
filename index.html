@@ -1,17 +1,210 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Number Generator</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Premium Lotto Generator v2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght @400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --container-bg: #ffffff;
+            --text-main: #1d1d1f;
+            --text-sub: #86868b;
+            --card-bg: #f5f5f7;
+            --accent: #0071e3;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme='dark'] {
+            --bg-color: #000000;
+            --container-bg: #1c1c1e;
+            --text-main: #f5f5f7;
+            --text-sub: #a1a1a6;
+            --card-bg: #2c2c2e;
+            --accent: #0a84ff;
+            --shadow: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: var(--container-bg);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px var(--shadow);
+            position: relative;
+        }
+
+        /* 테마 전환 버튼 */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: none;
+            padding: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            transition: 0.2s;
+        }
+
+        h1 { font-weight: 900; font-size: 1.8rem; margin-bottom: 2rem; }
+        h1 span { color: var(--accent); }
+
+        .game-row {
+            background: var(--card-bg);
+            margin-bottom: 12px;
+            padding: 15px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+
+        .game-row:hover { transform: translateY(-2px); }
+
+        .game-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            width: 45px;
+        }
+
+        .balls { display: flex; gap: 8px; }
+
+        /* 로또 공 디자인 업그레이드 */
+        .ball {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #fff;
+            font-size: 0.95rem;
+            box-shadow: inset -3px -3px 6px rgba(0,0,0,0.2), 2px 4px 8px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+        }
+
+        @keyframes bounceIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* 실제 로또 색상 (명확한 대비) */
+        .n1 { background: linear-gradient(135deg, #ffcc00, #f39c12); } /* 1-10 */
+        .n11 { background: linear-gradient(135deg, #3498db, #2980b9); } /* 11-20 */
+        .n21 { background: linear-gradient(135deg, #e74c3c, #c0392b); } /* 21-30 */
+        .n31 { background: linear-gradient(135deg, #95a5a6, #7f8c8d); } /* 31-40 */
+        .n41 { background: linear-gradient(135deg, #2ecc71, #27ae60); } /* 41-45 */
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            margin-top: 1.5rem;
+            border: none;
+            border-radius: 16px;
+            background: var(--accent);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .generate-btn:active { transform: scale(0.98); }
+    </style>
 </head>
-<body>
-    <div class="lotto-container">
-        <h1>Lotto Number Generator</h1>
-        <div class="lotto-numbers"></div>
-        <button class="generate-btn">Generate Lotto Numbers</button>
-    </div>
-    <script src="main.js"></script>
+<body data-theme="light">
+
+<div class="container">
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-icon">🌙</button>
+    <h1>LOTTO <span>PICK</span></h1>
+    
+    <div id="lotto-board">
+        </div>
+
+    <button class="generate-btn" onclick="generateAll()">번호 생성하기</button>
+</div>
+
+<script>
+    function toggleTheme() {
+        const body = document.body;
+        const icon = document.getElementById('theme-icon');
+        if (body.getAttribute('data-theme') === 'light') {
+            body.setAttribute('data-theme', 'dark');
+            icon.innerText = '☀️';
+        } else {
+            body.setAttribute('data-theme', 'light');
+            icon.innerText = '🌙';
+        }
+    }
+
+    function getBallColor(n) {
+        if (n <= 10) return 'n1';
+        if (n <= 20) return 'n11';
+        if (n <= 30) return 'n21';
+        if (n <= 40) return 'n31';
+        return 'n41';
+    }
+
+    function generateAll() {
+        const board = document.getElementById('lotto-board');
+        board.innerHTML = '';
+
+        for (let i = 1; i <= 5; i++) {
+            const row = document.createElement('div');
+            row.className = 'game-row';
+            
+            const label = document.createElement('div');
+            label.className = 'game-label';
+            label.innerText = 'GAME ' + i;
+            
+            const ballsContainer = document.createElement('div');
+            ballsContainer.className = 'balls';
+
+            let nums = [];
+            while(nums.length < 6) {
+                let n = Math.floor(Math.random() * 45) + 1;
+                if(!nums.includes(n)) nums.push(n);
+            }
+            nums.sort((a, b) => a - b);
+
+            nums.forEach((n, idx) => {
+                const ball = document.createElement('div');
+                ball.className = `ball ${getBallColor(n)}`;
+                ball.innerText = n;
+                ball.style.animationDelay = (idx * 0.05) + (i * 0.1) + 's';
+                ballsContainer.appendChild(ball);
+            });
+
+            row.appendChild(label);
+            row.appendChild(ballsContainer);
+            board.appendChild(row);
+        }
+    }
+
+    // 첫 실행
+    generateAll();
+</script>
 </body>
 </html>
