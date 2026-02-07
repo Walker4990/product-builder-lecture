@@ -156,3 +156,17 @@
     background-color: var(--container-bg);
     color: var(--text-main);
 }
+
+.footer-links {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+.footer-links a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+.footer-links a:hover {
+    text-decoration: underline;
+}
