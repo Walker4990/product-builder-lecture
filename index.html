@@ -10,11 +10,11 @@
 <body data-theme="light">
 
 <div class="container">
-    <div class="language-switcher">
-        <button onclick="setLanguage('ko')">🇰🇷</button>
-        <button onclick="setLanguage('en')">🇺🇸</button>
-        <button onclick="setLanguage('ja')">🇯🇵</button>
-    </div>
+    <select id="language-select" onchange="setLanguage(this.value)">
+        <option value="ko">한국어 🇰🇷</option>
+        <option value="en">English 🇺🇸</option>
+        <option value="ja">日本語 🇯🇵</option>
+    </select>
     <button class="theme-toggle" onclick="toggleTheme()" id="theme-icon">🌙</button>
     <h1 data-i18n-key="header">LOTTO <span>PICK</span></h1>
     
